@@ -1,169 +1,329 @@
-import java.util.HashMap;
+import java.sql.*;
 import java.util.InputMismatchException;
-import java.util.Map;
 import java.util.Scanner;
 
-public class ToDoListTasks extends TodoTask {
-    private final HashMap<Integer, TodoTask> listOfTasks=new HashMap<>();
-    private int ID=0;
-    Scanner scan=new Scanner(System.in);
-    private String priority;
-    private  boolean flag=true;
+public class ToDoListTasks {
 
-    public ToDoListTasks(){
+    Scanner scan = new Scanner(System.in);
+    private boolean flag = true;
+
+    public void start() {
+        menu();
     }
-    public ToDoListTasks(String priority,int ID){//still think about it
-        this.ID=ID;
-        this.priority=priority;
+
+    public void menu() {
+        System.out.println("\n\t*** To-Do List ***");
+        System.out.println("1- Add Task");
+        System.out.println("2- Delete Task");
+        System.out.println("3- Search for Task");
+        System.out.println("4- Exit");
+        System.out.println("5- Show Uncompleted Tasks");
+        System.out.println("6- Show All Tasks");
+        System.out.println("7- Mark As Complete");
+        System.out.println("8- Show Completed Tasks");
+        System.out.print("Your Choice: ");
+
+        chooseFrom();
     }
-    public void start(){
-        menue();
-    }
-public void menue(){
-    System.out.println("\t*** To-Do List ***");
-    System.out.println("-what do you want to do :");
-    System.out.println("1-Add Task");
-    System.out.println("2-Delete Task");
-    System.out.println("3-Search for Task");
-    System.out.println("4-Exit");
-    System.out.println("5-Show Un-Completed Tasks");/////////////
-    System.out.println("6-Show the list of Tasks");
-    System.out.println("7-mark As Complete");
-    System.out.println("8-Show Completed Tasks");////////////
-    System.out.println("-Choose a number :");
-    ChooseFrom();
-}
-    public void ChooseFrom(){
-        while(flag) {
-        try {
+
+    public void chooseFrom() {
+
+        while (flag) {
+
+            try {
+
                 int userInput = scan.nextInt();
                 display(userInput);
-                if(flag) {
-                    menue();
-                }
-        }catch (InputMismatchException e){
-            System.out.println("Invalid Input");
-            System.out.println("Enter number from 1-8 based on the list please:");
-           scan.nextLine();
-           if(flag) {
-               menue();
-           }
+
+                if (flag)
+                    menu();
+
+            } catch (InputMismatchException e) {
+
+                System.out.println("Invalid Input.");
+                scan.nextLine();
+
+                if (flag)
+                    menu();
+            }
         }
     }
-    }
-    public void display(int userInput){
-        switch (userInput){
+
+    public void display(int userInput) {
+
+        switch (userInput) {
+
             case 1 -> {
-                System.out.println("**what do you want to add: ");
                 scan.nextLine();
+                System.out.print("Enter Task: ");
                 add();
             }
-            case 2->{
-                System.out.println("**what is the ID for item you want to delete :");
-            delete();
+
+            case 2 -> {
+                System.out.print("Enter Task ID: ");
+                delete();
             }
-            case 3 ->{
-                System.out.println("**What is the ID for the Task You Want to See:");
+
+            case 3 -> {
+                System.out.print("Enter Task ID: ");
                 searchForTask();
             }
-            case 5->{
-                System.out.println("\t**The Un-Completed List:**");
-                showUnCompletedList();
+
+            case 4 -> {
+                System.out.println("bye");
+                flag = false;
             }
-            case 8->{
-                System.out.println("\t**The Completed List:**");
-                showCompletedList();
-            }
-            case 6->{
-                System.out.println("\t**The List:**");
-                TheList();
-            }
-            case 7 ->{
-                System.out.println("**Enter The ID For The Task U Complete");
+
+            case 5 -> showUnCompletedList();
+
+            case 6 -> theList();
+
+            case 7 -> {
+                System.out.print("Enter Task ID: ");
                 markAsComplete();
             }
-            case 4->{
-                System.out.println("**Good bye**");
-                flag=false;
-            }
+
+            case 8 -> showCompletedList();
+
+            default -> System.out.println("Invalid Choice.");
         }
+
     }
-    public void add(){
-        String userTask=scan.nextLine();
-        setID(++ID);
-        TodoTask task=new TodoTask(userTask,false);
-        listOfTasks.put(getID(),task);
-        System.out.println("Task: "+userTask+",ID= "+getID());
-    }
-    public void delete(){
-    int deleteID=scan.nextInt();
-    if (listOfTasks.containsKey(deleteID)) {
-        listOfTasks.remove(deleteID);
-        System.out.println("The ID successfully deleted");
-    }else {
-        System.out.println("Invalid ID");
-    }
-    }
-public void TheList(){
-        for(Map.Entry<Integer,TodoTask> task: listOfTasks.entrySet()){
-TodoTask content=task.getValue();
-            System.out.println(content.getContent());
-        }
-}
-    public void markAsComplete(){
+
+    public void add() {
+
+        String task = scan.nextLine();
+
         try {
-            int idComplete = scan.nextInt();
-            TodoTask complete = listOfTasks.get(idComplete);
-            if(!complete.isDone()){
-                complete.setDone(true);
-                System.out.println("Successfully Completed");
-            }else{
-                System.out.println("already Done");
-            }
-        }catch (NullPointerException e){
-            System.out.println("Invalid ID");
+
+            Connection con = DBConnection.getConnection();
+
+            String sql = "INSERT INTO tasks(content,is_done) VALUES(?,?)";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setString(1, task);
+            ps.setBoolean(2, false);
+
+            ps.executeUpdate();
+
+            System.out.println("Task Added Successfully.");
+
+            ps.close();
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
     }
 
 
-public void searchForTask(){
+    public void delete() {
+
+        int id = scan.nextInt();
+
         try {
-            int userSearchID = scan.nextInt();
-            TodoTask searchTask = listOfTasks.get(userSearchID);
-            System.out.println(searchTask.getContent());
-        }catch (NullPointerException e){
-            System.out.println("Invalid ID");
+
+            Connection con = DBConnection.getConnection();
+
+            String sql = "DELETE FROM tasks WHERE id=?";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, id);
+
+            int rows = ps.executeUpdate();
+
+            if (rows > 0)
+                System.out.println("Task Deleted.");
+            else
+                System.out.println("Invalid ID.");
+
+            ps.close();
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+    }
+
+
+    public void theList() {
+
+        try {
+
+            Connection con = DBConnection.getConnection();
+
+            Statement st = con.createStatement();
+
+            ResultSet rs = st.executeQuery("SELECT * FROM tasks");
+
+            while (rs.next()) {
+
+                System.out.println(
+                        rs.getInt("id")
+                                +"- "
+                                + rs.getString("content")
+                                + " is "
+                                + (rs.getBoolean("is_done") ? "Done" : "Not Done")
+                );
+
+            }
+
+            rs.close();
+            st.close();
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    public void showUnCompletedList(){
-        boolean found=false;
-        for(TodoTask task: listOfTasks.values()){
-            if(!task.isDone()){
-                System.out.println(task);
-                found=true;
-            }
-        }if(!found){
-            System.out.println("No UNCompleted Tasks");
 
-        }}
-    public void showCompletedList(){
-
-        boolean found=false;
-        for(TodoTask task: listOfTasks.values()){
-            if(task.isDone()){
-                System.out.println(task);
-                found=true;
-            }
-        }if(!found){
-            System.out.println("No Completed Tasks");
-
-
-    }}
-
-    public int getID() {
-        return ID;
     }
-    public void setID(int ID) {
-        this.ID = ID;
+
+    public void searchForTask() {
+
+        int id = scan.nextInt();
+
+        try {
+
+            Connection con = DBConnection.getConnection();
+
+            String sql = "SELECT * FROM tasks WHERE id=?";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                System.out.println("ID      : " + rs.getInt("id"));
+                System.out.println("Task    : " + rs.getString("content"));
+                System.out.println("Status is : "
+                        + (rs.getBoolean("is_done") ? "Done" : "Not Done"));
+
+            } else {
+
+                System.out.println("Task Not Found.");
+
+            }
+
+            rs.close();
+            ps.close();
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
+
+    public void markAsComplete() {
+
+        int id = scan.nextInt();
+
+        try {
+
+            Connection con = DBConnection.getConnection();
+
+            String sql = "UPDATE tasks SET is_done=true WHERE id=?";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ps.setInt(1, id);
+
+            int rows = ps.executeUpdate();
+
+            if (rows > 0)
+                System.out.println("Task Completed.");
+            else
+                System.out.println("Invalid ID.");
+
+            ps.close();
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void showCompletedList() {
+
+        try {
+
+            Connection con = DBConnection.getConnection();
+
+            String sql = "SELECT * FROM tasks WHERE is_done=true";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ResultSet rs = ps.executeQuery();
+
+            boolean found = false;
+
+            while (rs.next()) {
+
+                System.out.println(
+                        rs.getInt("id")
+                                + " - "
+                                + rs.getString("content"));
+
+                found = true;
+            }
+
+            if (!found)
+                System.out.println("No Completed Tasks.");
+
+            rs.close();
+            ps.close();
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public void showUnCompletedList() {
+
+        try {
+
+            Connection con = DBConnection.getConnection();
+
+            String sql = "SELECT * FROM tasks WHERE is_done=false";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+
+            ResultSet rs = ps.executeQuery();
+
+            boolean found = false;
+
+            while (rs.next()) {
+
+                System.out.println(
+                        rs.getInt("id")
+                                + " - "
+                                + rs.getString("content"));
+
+                found = true;
+            }
+
+            if (!found)
+                System.out.println("No Uncompleted Tasks.");
+
+            rs.close();
+            ps.close();
+            con.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
