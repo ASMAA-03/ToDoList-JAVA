@@ -5,7 +5,7 @@ function App() {
     <>
       <div className="flex justify-between w-full max-h-full">
         <div className="bg-amber-500 w-full"></div>
-        <Calender/>
+        <Calender/> 
       </div>
       
     </>
