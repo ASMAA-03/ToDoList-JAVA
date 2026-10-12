@@ -1,13 +1,28 @@
-import { useState } from "react";
+import { use, useState } from "react";
 
-export default function TaskBox(){
+const colors = [
+  { name: 'green', value: '#b9e3bd' },
+  { name: 'orange', value: '#ffbd96' },
+  { name: 'pink', value: '#f5c1ca' },
+  { name: 'yellow', value: '#f7e49a' },
+  { name: 'blue', value: '#b6def1' },
+  { name: 'purple', value: '#d6c6f1' },
+]
+
+export default function TaskBox() {
   const [title, setTitle] = useState('');
-  const [time, setTime] = useState(Date.now);
-  const [date, setDate] = useState("");
-  const [task, setTask] = useState('');
+ const [date, setDate] = useState('2026-10-12')
+  const [time, setTime] = useState('09:00')
+  const [color, setColor] = useState(colors[0].value);
+  const [tasks, setTask] = useState([]);
 
+  function addTask() {
+    if (!title.trim()) return
+    setTask([...tasks, { id: Date.now(), title: title.trim(), date, time, color }])
 
-  
+    setTitle('')
+
+  }
   return (
     <>
   
@@ -72,7 +87,64 @@ export default function TaskBox(){
                 className="h-12 w-full rounded-full border border-[#d9cdbb] bg-[#f8f2e7] px-4 outline-none focus:border-[#b99a79]"
             >
               </input>
-          </div>
+            </div>
+            <div className="flex flex-col gap-5 mt-2 ">
+
+                          <div>
+              <button
+            type="button"
+            onClick={addTask}
+            className="rounded-full bg-[#17100c] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#49352a] active:scale-95"
+          >
+            + &nbsp; Add task
+            </button>
+            </div>
+            
+            <div>
+             <label className="mb-3 block font-mono text-[10px]">
+            COLOR
+          </label>
+          <div className="mb-7 flex gap-2">
+            {colors.map((item) => (
+              <button
+                key={item.name}
+                type="button"
+                aria-label={item.name}
+                title={item.name}
+                onClick={() => setColor(item.value)}
+                className={`h-9 w-9 rounded-full border ${
+                  color === item.value
+                    ? 'scale-105 border-[#241b17] ring-1 ring-[#241b17]'
+                    : 'border-[#d9cdbb] hover:scale-105'
+                }`}
+                style={{ backgroundColor: item.value }}
+              />
+            ))}
+              </div>
+</div>
+
+            </div>
+<div></div>
+              <div className="flex flex-col gap-4 ">
+             
+              <label className="font-semibold">
+                  %Preview
+              </label>
+              <div
+                 value={colors.values}
+              className="flex min-w-72 rounded-2xl p-2 justify-between "
+              style={{backgroundColor:color}}
+              >
+              <input
+                  placeholder={title} 
+                >  
+              </input>
+               <span className=" text-xs p-1">
+                {date.slice(5).replace('-', ':')} in {time}
+               </span>
+              </div>
+               
+</div>
           </div>
 
 
