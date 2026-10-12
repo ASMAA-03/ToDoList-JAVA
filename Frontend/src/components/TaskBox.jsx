@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { getTasks,addTask as saveTask } from "../services/todoservice";
+import { getTasks, addTask as saveTask, deleteTask as removeTask } from "../services/todoservice";
+
 const colors = [
   { name: 'green', value: '#b9e3bd' },
   { name: 'orange', value: '#ffbd96' },
@@ -20,15 +21,33 @@ export default function TaskBox() {
   async function addTask() {
     if (!title.trim()) return
     const savedTask = await saveTask(title.trim());
-    setTask([...tasks, savedTask]);
-
+ setTask([
+    ...tasks,
+    {
+      id: savedTask.id,
+      title: savedTask.content,
+      color:color,
+    },
+ ]);
     setTitle("");
-
   }
+
+  async function deleteTask(id) {
+    await removeTask(id);
+    setTask(tasks.filter((task) => task.id !== id));
+  }
+
+
+
   useEffect(() => {
     async function loadTasks() {
       const data = await getTasks();
-      setTask(data);
+      setTask(
+        data.map((task) => ({
+          id: task.id,
+          title: task.content,
+        }))
+      );
     }
 
     loadTasks();
@@ -71,7 +90,8 @@ export default function TaskBox() {
         onKeyDown={(e) => e.key === "Enter" && addTask()}
         placeholder="Write a tiny intention..."
         className="mb-6 h-[60px] w-full rounded-full border border-[#d9cdbb] bg-[#f8f2e7] px-5 text-base outline-none transition focus:border-[#b99a79] focus:ring-2 focus:ring-[#e8d8c5]"
-      />
+            />
+            
     </div>
           <div className="mb-7 grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
@@ -99,6 +119,8 @@ export default function TaskBox() {
             >
               </input>
             </div>
+
+
             <div className="flex flex-col gap-5 mt-2 ">
 
                           <div>
@@ -142,7 +164,6 @@ export default function TaskBox() {
                   %Preview
               </label>
               <div
-                 value={colors.values}
               className="flex min-w-72 rounded-2xl p-2 justify-between "
               style={{backgroundColor:color}}
               >
@@ -155,10 +176,38 @@ export default function TaskBox() {
                </span>
               </div>
                
-</div>
+              <div>
+                <div className="relative mt-8">
+  <h2 className="mb-4 text-xl font-bold text-[#241b17]">
+    My TodoList
+  </h2>
+
+  <div className="flex flex-col gap-3">
+   
+{tasks.map((task) => (
+  <div
+    key={task.id}
+    style={{ backgroundColor: task.color }}
+    className="flex items-center justify-between rounded-2xl border border-[#d9cdbb] bg-[#f8f2e7] p-4"
+  >
+    <span>{task.title}</span>
+
+    <button
+      onClick={() => deleteTask(task.id)}
+      className="rounded-full bg-red-100 px-3 py-1 text-sm text-red-700 hover:bg-red-200"
+    >
+      Delete
+    </button>
+  </div>
+))}
+        
+  </div>
+              </div>
+            </div>
+            
+           </div>
+            
           </div>
-
-
   </section>
 </div>
 
