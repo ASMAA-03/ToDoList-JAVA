@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useEffect } from "react";
-
+import { getTasks,addTask as saveTask } from "../services/todoservice";
 const colors = [
   { name: 'green', value: '#b9e3bd' },
   { name: 'orange', value: '#ffbd96' },
@@ -17,13 +17,23 @@ export default function TaskBox() {
   const [color, setColor] = useState(colors[0].value);
   const [tasks, setTask] = useState([]);
 
-  function addTask() {
+  async function addTask() {
     if (!title.trim()) return
-    setTask([...tasks, { id: Date.now(), title: title.trim(), date, time, color }])
+    const savedTask = await saveTask(title.trim());
+    setTask([...tasks, savedTask]);
 
-    setTitle('')
+    setTitle("");
 
   }
+  useEffect(() => {
+    async function loadTasks() {
+      const data = await getTasks();
+      setTask(data);
+    }
+
+    loadTasks();
+  }, []);
+
   return (
     <>
   
@@ -32,7 +42,7 @@ export default function TaskBox() {
 
     <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#ffd8bf] opacity-80 blur-3xl" />
 
-    <div className="pointer-events-none absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-[#d8f0d3] opacity-80 blur-3xl" />
+    <div className="pointer-events-none absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-[#c0edb7] opacity-80 blur-3xl" />
 
     <div className="relative flex w-full items-center justify-between gap-4 text-center">
 
