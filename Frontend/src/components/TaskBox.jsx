@@ -1,4 +1,5 @@
-import { use, useState } from "react";
+import { useState } from "react";
+import { useEffect } from "react";
 
 const colors = [
   { name: 'green', value: '#b9e3bd' },
@@ -11,7 +12,7 @@ const colors = [
 
 export default function TaskBox() {
   const [title, setTitle] = useState('');
- const [date, setDate] = useState('2026-10-12')
+  const [date, setDate] = useState('2026-10-12')
   const [time, setTime] = useState('09:00')
   const [color, setColor] = useState(colors[0].value);
   const [tasks, setTask] = useState([]);
@@ -26,7 +27,7 @@ export default function TaskBox() {
   return (
     <>
   
-<div className="min-h-screen bg-blue-950 p-3 sm:p-6">
+<div className="min-h-screen bg-[#f7efe1] p-3 sm:p-6">
   <section className="relative mx-auto min-h-[660px] max-w-4xl overflow-hidden rounded-[28px] border border-[#d9cdbb] bg-[#fffaf1] p-6 shadow-[0_3px_0_#d9cdbb] sm:p-8">
 
     <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#ffd8bf] opacity-80 blur-3xl" />
