@@ -20,13 +20,15 @@ export default function TaskBox() {
 
   async function addTask() {
     if (!title.trim()) return
-    const savedTask = await saveTask(title.trim());
+    const savedTask = await saveTask(title.trim(),color,date,time);
  setTask([
     ...tasks,
     {
       id: savedTask.id,
       title: savedTask.content,
-      color:color,
+      color: color,
+      date: date,
+      time: time,
     },
  ]);
     setTitle("");
@@ -46,6 +48,9 @@ export default function TaskBox() {
         data.map((task) => ({
           id: task.id,
           title: task.content,
+          color: task.color,
+          time: task.time,
+          date:task.date,
         }))
       );
     }
@@ -101,7 +106,7 @@ export default function TaskBox() {
             <input
               type="time"
               value={time}
-              onChange={(e) => setTime(e.target.time)}
+              onChange={(e) => setTime(e.target.value)}
                 className="h-12 w-full rounded-full border border-[#d9cdbb] bg-[#f8f2e7] px-4 outline-none focus:border-[#b99a79]"
             >
               </input>
@@ -114,7 +119,7 @@ export default function TaskBox() {
             <input
               type="date"
               value={date}
-              onChange={(e) => setDate(e.target.date)}
+              onChange={(e) => setDate(e.target.value)}
                 className="h-12 w-full rounded-full border border-[#d9cdbb] bg-[#f8f2e7] px-4 outline-none focus:border-[#b99a79]"
             >
               </input>
@@ -191,7 +196,9 @@ export default function TaskBox() {
     className="flex items-center justify-between rounded-2xl border border-[#d9cdbb] bg-[#f8f2e7] p-4"
   >
     <span>{task.title}</span>
-
+        <span className=" text-xs p-1">
+          {task.date} . {task.time}
+               </span>
     <button
       onClick={() => deleteTask(task.id)}
       className="rounded-full bg-red-100 px-3 py-1 text-sm text-red-700 hover:bg-red-200"

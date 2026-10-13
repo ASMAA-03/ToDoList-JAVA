@@ -10,7 +10,7 @@ export async function getTasks() {
     return response.json();
 }
 
-export async function addTask(title) {
+export async function addTask(title, color, date, time) {
     const response = await fetch(API_URL, {
         method: "POST",
         headers: {
@@ -18,7 +18,9 @@ export async function addTask(title) {
         },
         body: JSON.stringify({
             content: title,
-            done: false,
+            color: color,
+            date: date,
+            time: time,
         }),
     });
 
