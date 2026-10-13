@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -18,10 +17,12 @@ public class TodoController {
     public TodoController(TodoRepository todoRepository) {
         this.todoRepository = todoRepository;
     }
+
     @GetMapping
     public List<Todo> getAllTasks() {
         return todoRepository.findAll();
     }
+
     @GetMapping("/{id}")
     public Todo getTask(@PathVariable Integer id){
         return todoRepository.findById(id).orElse(null);
@@ -30,10 +31,12 @@ public class TodoController {
     public Todo setTask(@RequestBody Todo task){
 return todoRepository.save(task);
     }
+
     @DeleteMapping("/{id}")
     public void deleteTask(@PathVariable Integer id) {
         todoRepository.deleteById(id);
     }
+
     @PutMapping("/{id}")
     public Todo updateTask(@PathVariable Integer id,
                            @RequestBody Todo updatedTodo) {
