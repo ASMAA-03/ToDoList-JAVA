@@ -3,12 +3,12 @@ import { useEffect } from "react";
 import { getTasks, addTask as saveTask, deleteTask as removeTask } from "../services/todoservice";
 
 const colors = [
-  { name: 'green', value: '#b9e3bd' },
-  { name: 'orange', value: '#ffbd96' },
-  { name: 'pink', value: '#f5c1ca' },
-  { name: 'yellow', value: '#f7e49a' },
-  { name: 'blue', value: '#b6def1' },
-  { name: 'purple', value: '#d6c6f1' },
+  { name: 'green', value: '#BAFFC1' },
+  { name: 'orange', value: '#FCD3BB' },
+  { name: 'pink', value: '#F5BBC5' },
+  { name: 'yellow', value: '#FDE68B' },
+  { name: 'blue', value: '#80D7FF' },
+  { name: 'purple', value: '#8A64CB' },
 ]
 
 export default function TaskBox() {
@@ -138,11 +138,12 @@ export default function TaskBox() {
             </button>
             </div>
             
+              
             <div>
              <label className="mb-3 block font-mono text-[10px]">
-            COLOR
-          </label>
-          <div className="mb-7 flex gap-2">
+                COLOR
+              </label>
+           <div className="mb-7 flex gap-2">
             {colors.map((item) => (
               <button
                 key={item.name}
@@ -163,21 +164,23 @@ export default function TaskBox() {
 
             </div>
 <div></div>
-              <div className="flex flex-col gap-4 ">
+              <div className="flex flex-col gap-4 w-[700px]">
              
               <label className="font-semibold">
                   %Preview
               </label>
               <div
-              className="flex min-w-72 rounded-2xl p-2 justify-between "
+              className="flex min-w-96  rounded-2xl p-4 justify-between "
               style={{backgroundColor:color}}
               >
-              <input
-                  placeholder={title} 
+                <input 
+                  className="w-96 outline-none"
+                  value={title}
+                  placeholder="Write Something and it'll appear here" 
                 >  
               </input>
                <span className=" text-xs p-1">
-                {date.slice(5).replace('-', ':')} in {time}
+                {date.slice(3).replace('-', ':')} in {time}
                </span>
               </div>
                
