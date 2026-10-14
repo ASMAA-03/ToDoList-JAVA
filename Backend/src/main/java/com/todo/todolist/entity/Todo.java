@@ -1,8 +1,8 @@
 package com.todo.todolist.entity;
 
 import jakarta.persistence.*;
-import java.sql.Time;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "tasks")
@@ -21,10 +21,10 @@ public class Todo {
     private String color;
 
     @Column(name="task_date")
-    private Date date;
+    private LocalDate date;
 
     @Column(name="task_time")
-    private Time time;
+    private LocalTime time;
 
     public void setId(Integer id) {
         this.id = id;
@@ -58,19 +58,19 @@ public class Todo {
         this.color = color;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public Time getTime() {
+    public LocalTime getTime() {
         return time;
     }
 
-    public void setTime(Time time) {
+    public void setTime(LocalTime time) {
         this.time = time;
     }
 }
