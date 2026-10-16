@@ -1,14 +1,19 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { getTasks, addTask as saveTask, deleteTask as removeTask } from "../services/todoservice";
+import {
+  getTasks,
+  addTask as saveTask,
+  deleteTask as removeTask,
+  updateTask as editTask,
+} from "../services/todoservice";
 
 const colors = [
-  { name: 'green', value: '#BAFFC1' },
-  { name: 'orange', value: '#FCD3BB' },
-  { name: 'pink', value: '#F5BBC5' },
-  { name: 'yellow', value: '#FDE68B' },
-  { name: 'blue', value: '#80D7FF' },
-  { name: 'purple', value: '#8A64CB' },
+  { name: 'green', value: '#A2E9A9' },
+  { name: 'orange', value: '#F7D7C4' },
+  { name: 'pink', value: '#FFA9B7' },
+  { name: 'yellow', value: '#FFEB9C' },
+  { name: 'blue', value: '#A3E2FF' },
+  { name: 'purple', value: '#BA93FF' },
 ]
 
 export default function TaskBox() {
@@ -17,6 +22,10 @@ export default function TaskBox() {
   const [time, setTime] = useState('09:00')
   const [color, setColor] = useState(colors[0].value);
   const [tasks, setTask] = useState([]);
+  const [editText, setEditText] = useState('');
+  const [editId, setEditId] = useState(null);
+  const [visible, isVisible] = useState(false);
+
 
   async function addTask() {
     if (!title.trim()) return
@@ -39,7 +48,28 @@ export default function TaskBox() {
     setTask(tasks.filter((task) => task.id !== id));
   }
 
+async function updateTask(id,title) {
+  const editedTask = await editTask(id, title);
+  setTask(tasks.map(
+    (task) => task.id === id
+      ? { ...task, title: editedTask.content } : task
+  ),
+  );
+  setTitle("");
+}
+  
+  
+  function handelEditClick(task) {
+    setEditId(task.id);
+    setEditText(task.title);
+    isVisible(true);
+  }
 
+  function handleSaveClick(visible) {
+    isVisible(visible);
+    setEditId(null);
+    console.log(visible)
+}
 
   useEffect(() => {
     async function loadTasks() {
@@ -159,11 +189,9 @@ export default function TaskBox() {
                 style={{ backgroundColor: item.value }}
               />
             ))}
-              </div>
-</div>
-
-            </div>
-<div></div>
+              </div></div></div>
+            <div></div>
+            
               <div className="flex flex-col gap-4 w-[700px]">
              
               <label className="font-semibold">
@@ -180,7 +208,7 @@ export default function TaskBox() {
                 >  
               </input>
                <span className=" text-xs p-1">
-                {date.slice(3).replace('-', ':')} in {time}
+                {date.slice(3).replace('-', ':')} in {time.slice(0)}
                </span>
               </div>
                
@@ -198,16 +226,50 @@ export default function TaskBox() {
     style={{ backgroundColor: task.color }}
     className="flex items-center justify-between rounded-2xl border border-[#d9cdbb] bg-[#f8f2e7] p-4"
   >
-    <span>{task.title}</span>
+    {editId === task.id ? (
+      <input
+        className="outline-none"
+        type="text"
+        value={editText}
+        onChange={(e)=>setEditText(e.target.value)}></input>
+    ) : (
+        <span className="break-words">{task.title}</span>
+    )
+  
+  }
         <span className=" text-xs p-1">
           {task.date} . {task.time}
-               </span>
-    <button
+    </span>
+    <div className="flex gap-4">
+       <button
       onClick={() => deleteTask(task.id)}
-      className="rounded-full bg-red-100 px-3 py-1 text-sm text-red-700 hover:bg-red-200"
+      className="rounded-full bg-red-100 px-5 py-1 text-sm text-red-700 hover:bg-red-200"
     >
       Delete
-    </button>
+      </button>
+      
+      {(isVisible&&editId==task.id) ? (
+        <button
+          onClick={() => { updateTask(task.id, editText), handleSaveClick(false) }}
+        className="rounded-full bg-blue-100 px-6 py-1 text-sm text-blue-700 hover:bg-blue-200"
+
+      >
+        save
+      </button>
+      ) : (
+           <button
+        onClick={()=>handelEditClick(task)}
+        className="rounded-full bg-pink-100 px-6 py-1 text-sm text-pink-700 hover:bg-pink-200"
+
+      >
+        Edit
+      </button>
+      )
+   
+  }
+      
+    </div>
+   
   </div>
 ))}
         
