@@ -198,11 +198,11 @@ async function updateTask(id,title) {
                   %Preview
               </label>
               <div
-              className="flex min-w-96  rounded-2xl p-4 justify-between "
+              className="w-[310px] flex flex-col md:w-full  md:flex-row min-w-0 rounded-2xl p-4 justify-between"
               style={{backgroundColor:color}}
               >
                 <input 
-                  className="w-96 outline-none"
+                className="flex-1 min-w-0 outline-none"
                   value={title}
                   placeholder="Write Something and it'll appear here" 
                 >  
@@ -224,24 +224,26 @@ async function updateTask(id,title) {
   <div
     key={task.id}
     style={{ backgroundColor: task.color }}
-    className="flex items-center justify-between rounded-2xl border border-[#d9cdbb] bg-[#f8f2e7] p-4"
+    className="w-[280px] flex flex-col md:w-full md:flex-row   justify-between rounded-2xl border border-[#d9cdbb] bg-[#f8f2e7] p-3"
   >
     {editId === task.id ? (
       <input
-        className="outline-none"
+        className="outline-none border border-amber-400 rounded-2xl p-3 "
         type="text"
         value={editText}
         onChange={(e)=>setEditText(e.target.value)}></input>
     ) : (
-        <span className="break-words">{task.title}</span>
+        <span className="px-2 py-3">{task.title}</span>
     )
   
   }
-        <span className=" text-xs p-1">
-          {task.date} . {task.time}
-    </span>
+        <span className=" text-xs p-4">
+          {task.date} | {task.time}
+        </span>
+    
     <div className="flex gap-4">
-       <button
+     
+      <button
       onClick={() => deleteTask(task.id)}
       className="rounded-full bg-red-100 px-5 py-1 text-sm text-red-700 hover:bg-red-200 hover:cursor-pointer"
     >
@@ -251,9 +253,8 @@ async function updateTask(id,title) {
       {(isVisible&&editId==task.id) ? (
         <button
           onClick={() => { updateTask(task.id, editText), handleSaveClick(false) }}
-        className="rounded-full bg-blue-100 px-6 py-1 text-sm text-blue-700 hover:bg-blue-200 hover:cursor-pointer"
-
-      >
+          className="rounded-full bg-blue-100 px-6 py-1 text-sm text-blue-700 hover:bg-blue-200 hover:cursor-pointer"
+  >
         save
       </button>
       ) : (
