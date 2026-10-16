@@ -162,7 +162,7 @@ async function updateTask(id,title) {
               <button
             type="button"
             onClick={addTask}
-            className="rounded-full bg-[#17100c] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#49352a] active:scale-95"
+            className="rounded-full bg-[#17100c] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#49352a] active:scale-95 hover:cursor-pointer"
           >
             + &nbsp; Add task
             </button>
@@ -243,7 +243,7 @@ async function updateTask(id,title) {
     <div className="flex gap-4">
        <button
       onClick={() => deleteTask(task.id)}
-      className="rounded-full bg-red-100 px-5 py-1 text-sm text-red-700 hover:bg-red-200"
+      className="rounded-full bg-red-100 px-5 py-1 text-sm text-red-700 hover:bg-red-200 hover:cursor-pointer"
     >
       Delete
       </button>
@@ -251,7 +251,7 @@ async function updateTask(id,title) {
       {(isVisible&&editId==task.id) ? (
         <button
           onClick={() => { updateTask(task.id, editText), handleSaveClick(false) }}
-        className="rounded-full bg-blue-100 px-6 py-1 text-sm text-blue-700 hover:bg-blue-200"
+        className="rounded-full bg-blue-100 px-6 py-1 text-sm text-blue-700 hover:bg-blue-200 hover:cursor-pointer"
 
       >
         save
@@ -259,7 +259,7 @@ async function updateTask(id,title) {
       ) : (
            <button
         onClick={()=>handelEditClick(task)}
-        className="rounded-full bg-pink-100 px-6 py-1 text-sm text-pink-700 hover:bg-pink-200"
+        className="rounded-full bg-pink-100 px-6 py-1 text-sm text-pink-700 hover:bg-pink-200 hover:cursor-pointer"
 
       >
         Edit
